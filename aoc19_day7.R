@@ -8,7 +8,6 @@
 ## Get the program
 program <- as.numeric(strsplit(readLines("input/input7.txt"), ",")[[1]])
 
-## -- PART 1 --
 ## Main changes from the intcode computer of Day 5
 ##   - Multiple inputs are now supported, using an input pointer to keep track
 ##   - Input and output state now contain: memory, memory pointer, 'finished' flag
