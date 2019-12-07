@@ -10,10 +10,10 @@ program <- as.numeric(strsplit(readLines("input/input7.txt"), ",")[[1]])
 
 ## Main changes from the intcode computer of Day 5
 ##   - Multiple inputs are now supported, using an input pointer to keep track
-##   - Input and output state now contain: memory, memory pointer, 'finished' flag
+##   - Input and output state now contain: memory, its pointer, 'finished' flag
 ##   - Output is no longer sent to stdout, but collected in a global buffer
 ##     (hurray for lexical scoping!)
-##     This way we still support intermediate outputs, as in previous assignments
+##     This way we still support intermediate output, as in previous days
 ##   - Opcode 4 /pauses/, returning the state but not flagging as finished
 ##   - Opcode 99 /halts/ execution, flagging the state as finished
 global_output_buffer <- NULL
@@ -41,7 +41,7 @@ run_intcode <- function(inputs, state) {
         params <- mmry[mmry_ptr + seq_len(n_params)]
 
         ## Function to retrieve the value of parameter N, depending on mode
-        ## Do not use for write positions, those are directly given as positions
+        ## Don't use for write positions, those are directly given as positions
         get_val <- function(parn) {
             if (parmodes[parn] == 1) params[parn] else mmry[params[parn] + 1]
         }
@@ -83,7 +83,7 @@ run_intcode <- function(inputs, state) {
                 next_instruction_ptr
             }
 
-        ## Stop if we encounter opcode 4 (pause), 99 (halt) or the end of memory (halt)
+        ## Stop on 4 (pause), 99 (halt) or the end of memory (halt)
         if (opcode %in% c("99", "4") || mmry_ptr > length(mmry)) {
             break
         }
@@ -110,11 +110,18 @@ run_amp_seq <- function(n_amps, amp_seq_input, first_inputs, amp_states) {
     next_input <- amp_seq_input
 
     for (ampn in seq(n_amps)) {
-        input_instructions <-
-            if (length(first_inputs)) c(first_inputs[ampn], next_input) else next_input
+
+        input_instructions <- if (length(first_inputs)) {
+            c(first_inputs[ampn], next_input)
+        } else {
+            next_input
+        }
+
         res <- run_amp(input_instructions, amp_states[[ampn]])
+
         next_input <- res$output
         amp_states[[ampn]] <- res$amp_state
+
     }
 
     list(output = tail(global_output_buffer, 1),
@@ -135,8 +142,12 @@ initial_amp_state <- list(mmry = program,
                           mmry_ptr = 1,
                           finished = FALSE)
 
-solution_1 <- max(sapply(all_combinations,
-                         function(x) run_amp_seq(5, 0, x, rep(list(initial_amp_state), 5))$output))
+solution_1 <-
+    max(sapply(all_combinations,
+               function(x) run_amp_seq(5, 0, x,
+                                       rep(list(initial_amp_state), 5))$output
+               )
+        )
 
 cat("Solution to Part 1:", solution_1, "\n")
 
@@ -144,7 +155,7 @@ cat("Solution to Part 1:", solution_1, "\n")
 ## Function to run the amp sequence with a feedback loop
 ## Phase settings should only be applied in the first iteration
 ## The last amp has the powah to signal that operation has halted
-run_amp_feedback <- function(initial_input, phase_settings, initial_amp_states) {
+run_amp_fb <- function(initial_input, phase_settings, initial_amp_states) {
 
     n_amps <- length(phase_settings)
     amp_states <- initial_amp_states
@@ -167,7 +178,11 @@ all_combinations <-
            split(as.matrix(expand.grid(5:9, 5:9, 5:9, 5:9, 5:9)),
                  seq_len(5**5)))
 
-solution_2 <- max(sapply(all_combinations,
-                         function(x) run_amp_feedback(0, x, rep(list(initial_amp_state), 5))))
+solution_2 <-
+    max(sapply(all_combinations,
+               function(x) run_amp_fb(0, x,
+                                            rep(list(initial_amp_state), 5))
+               )
+        )
 
 cat("Solution to Part 2:", solution_2, "\n")
