@@ -84,7 +84,7 @@ run_intcode <- function(inputs, state) {
                 next_instruction_ptr
             }
 
-        ## Stop if we encounter opcode 99 or when we reach the end
+        ## Stop if we encounter opcode 4 (pause), 99 (halt) or the end of memory (halt)
         if (opcode %in% c("99", "4") || mmry_ptr > length(mmry)) {
             break
         }
