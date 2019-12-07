@@ -145,9 +145,7 @@ initial_amp_state <- list(mmry = program,
 solution_1 <-
     max(sapply(all_combinations,
                function(x) run_amp_seq(5, 0, x,
-                                       rep(list(initial_amp_state), 5))$output
-    )
-    )
+                                       rep(list(initial_amp_state), 5))$output))
 
 cat("Solution to Part 1:", solution_1, "\n")
 
@@ -181,8 +179,6 @@ all_combinations <-
 solution_2 <-
     max(sapply(all_combinations,
                function(x) run_amp_fb(0, x,
-                                      rep(list(initial_amp_state), 5))
-    )
-    )
+                                      rep(list(initial_amp_state), 5))))
 
 cat("Solution to Part 2:", solution_2, "\n")
