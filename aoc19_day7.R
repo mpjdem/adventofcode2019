@@ -25,6 +25,7 @@ run_intcode <- function(inputs, state) {
     inp_ptr <- 1
 
     repeat ({
+
         ## Parse opcode, parameter modes and parameters from the instruction
         parmodes_opcode <- mmry[mmry_ptr]
 
@@ -111,11 +112,12 @@ run_amp_seq <- function(n_amps, amp_seq_input, first_inputs, amp_states) {
 
     for (ampn in seq(n_amps)) {
 
-        input_instructions <- if (length(first_inputs)) {
-            c(first_inputs[ampn], next_input)
-        } else {
-            next_input
-        }
+        input_instructions <-
+            if (length(first_inputs)) {
+                c(first_inputs[ampn], next_input)
+            } else {
+                next_input
+            }
 
         res <- run_amp(input_instructions, amp_states[[ampn]])
 
@@ -131,7 +133,7 @@ run_amp_seq <- function(n_amps, amp_seq_input, first_inputs, amp_states) {
 
 ## -- PART 1 --
 ## A very lazy approach to permutations without repetitions:
-## permutations with repetitions, then filter out repetitions
+## combinations with repetitions, then filter out repetitions
 all_combinations <-
     Filter(function(x) !any(duplicated(x)),
            split(as.matrix(expand.grid(0:4, 0:4, 0:4, 0:4, 0:4)),
