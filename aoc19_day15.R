@@ -76,6 +76,8 @@ draw_map <- function(robot_pos = NULL) {
     apply(mzmat, 1, function(x) cat(tile_symbols[x], "\n"))
     cat("\n\n")
 
+    invisible()
+
 }
 
 ## Function to get candidate positions around the current position
@@ -104,8 +106,9 @@ attempt_move <- function(robot_state) {
         return(robot_state)
     }
 
+    current_tile <- maze[maze$x == pos[1] & maze$y == pos[2],]$tile
     if (length(cand_dirs) == 1 &&
-        !maze[maze$x == pos[1] & maze$y == pos[2],]$tile == "start") {
+        !current_tile %in% c("start", "oxygen")) {
         update_map(pos, "deadend")
     }
 
@@ -171,8 +174,8 @@ repeat ({
 
 maze[maze$tile == "deadend",]$tile <- "empty"
 
-## Function to get the path length in every branching direction
-path_length_from <- function(pos) {
+## Function to get the max path length in every branching direction
+max_path_length_from <- function(pos) {
 
     update_map(pos, "deadend")
     cand_dirs <- get_candidates(pos)
@@ -181,12 +184,12 @@ path_length_from <- function(pos) {
         0
     } else {
         cand_pos <- lapply(directions[names(cand_dirs)], function(x) pos + x)
-        max(sapply(cand_pos, function(pos) 1 + path_length_from(pos)))
+        max(sapply(cand_pos, function(pos) 1 + max_path_length_from(pos)))
     }
 
 }
 
-solution_2 <- path_length_from(oxygen_pos)
+solution_2 <- max_path_length_from(oxygen_pos)
 cat("Solution to Part 2:", solution_2, "\n")
 
 update_map(c(0,0), "start")
