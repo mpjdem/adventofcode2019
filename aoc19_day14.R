@@ -39,9 +39,9 @@ ore_needed_for <- function(chout, qout_req) {
         rsv_used <- min(rsv, qout_req %% qout_base)
 
         qout_produced <- ceiling((qout_req - rsv_used)  / qout_base) * qout_base
-        qout_excess <- qout_produced - qout_req + rsv_used
+        qout_excess <- qout_produced - (qout_req - rsv_used)
 
-        reserves[[chout]] <<- rsv - rsv_used + (qout_excess * (qout_excess > 0))
+        reserves[[chout]] <<- rsv - rsv_used + qout_excess
 
         sum(mapply(function(chin, qin) {
             ore_needed_for(chin, (qout_produced / qout_base) * qin)
@@ -66,7 +66,7 @@ repeat ({
     reserves <- list()
     ore_needed <- ore_needed_for("FUEL", fuel)
     ore_excess <- ore_available - ore_needed
-    if (step == 1 && ore_excess > 0) break
+    if (step == 1 && ore_excess >= 0) break
     if (ore_excess < 0) {
         step <- ceiling(step / 2)
         fuel <- fuel - step
