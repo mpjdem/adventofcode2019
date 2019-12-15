@@ -35,25 +35,25 @@ tile_symbols <- c(empty = "\U25E6",
                   deadend = "\U25E6")
 
 ## Function to add or update one tile on the map
-update_map <- function(pos, tile) {
+update_maze <- function(maze, pos, tile) {
 
     idx <- which(pos[1] == maze$x & pos[2] == maze$y)
 
     if (length(idx) > 0) {
-        maze[idx,] <<- list(pos[1], pos[2], tile)
+        maze[idx,] <- list(pos[1], pos[2], tile)
     } else {
-        maze <<- rbind(maze,
-                       data.frame(x = pos[1],
-                                  y = pos[2],
-                                  tile = tile))
+        maze <- rbind(maze,
+                      data.frame(x = pos[1],
+                                 y = pos[2],
+                                 tile = tile))
     }
 
-    invisible()
+    maze
 
 }
 
 ## Function to render the map in stdout
-draw_maze <- function(robp = NULL) {
+draw_maze <- function(maze, robp = NULL) {
 
     all_coords <- expand.grid(x = seq(min(maze$x), max(maze$x)),
                               y = seq(min(maze$y), max(maze$y)))
@@ -65,7 +65,8 @@ draw_maze <- function(robp = NULL) {
     if (!is.null(robp)) mz[mz$x == robp[1] & mz$y == robp[2],]$tile <- "robot"
 
     mzm <- matrix(mz$tile, ncol = length(unique(mz$y)), byrow = TRUE)
-    apply(mzm, 1, function(x) cat(tile_symbols[x], "\n"))
+    mzm <- mzm[,rev(seq(ncol(mzm)))]
+    apply(mzm, 2, function(x) cat(tile_symbols[x], "\n"))
     cat("\n\n")
 
     invisible()
@@ -73,7 +74,7 @@ draw_maze <- function(robp = NULL) {
 }
 
 ## Function to get candidate positions around the current position
-get_candidates <- function(pos) {
+get_candidates <- function(maze, pos) {
 
     dirs <- lapply(directions, function(x) {
         new_pos <- pos + x
@@ -88,10 +89,11 @@ get_candidates <- function(pos) {
 ## Function to attempt one move in the maze
 attempt_move <- function(robot_state) {
 
+    maze <- robot_state$maze
     intcode_state <- robot_state$intcode_state
     pos <- robot_state$pos
 
-    cand_dirs <- get_candidates(pos)
+    cand_dirs <- get_candidates(maze, pos)
 
     if (length(cand_dirs) == 0) {
         robot_state$finished <- TRUE
@@ -101,7 +103,7 @@ attempt_move <- function(robot_state) {
     current_tile <- maze[maze$x == pos[1] & maze$y == pos[2],]$tile
     if (length(cand_dirs) == 1 &&
         !current_tile %in% c("start", "oxygen")) {
-        update_map(pos, "deadend")
+        maze <- update_maze(maze, pos, "deadend")
     }
 
     intcode_inp <-
@@ -117,17 +119,18 @@ attempt_move <- function(robot_state) {
         run_intcode_step(intcode_state,
                          which(names(directions) == intcode_inp))
 
-    if (intcode_state$output == 0) {
-        update_map(new_pos, "wall")
+    maze <- if (intcode_state$output == 0) {
+        update_maze(maze, new_pos, "wall")
     } else if (intcode_state$output == 1) {
-        update_map(new_pos, "empty")
         pos <- new_pos
+        update_maze(maze, new_pos, "empty")
     } else if (intcode_state$output == 2) {
-        update_map(new_pos, "oxygen")
         pos <- new_pos
+        update_maze(maze, new_pos, "oxygen")
     }
 
-    list(intcode_state = intcode_state,
+    list(maze = maze,
+         intcode_state = intcode_state,
          pos = pos,
          finished = FALSE)
 
@@ -135,17 +138,17 @@ attempt_move <- function(robot_state) {
 
 ## -- PART 1 --
 ## Travel the maze, marking deadends, until the oxygen is reached
-robot_state <- list(intcode_state = list(mmry = program),
+robot_state <- list(mze = initial_maze,
+                    intcode_state = list(mmry = program),
                     pos = c(0,0))
-maze <- initial_maze
-update_map(robot_state$pos, "start")
+robot_state$maze <- update_maze(robot_state$maze, robot_state$pos, "start")
 
 repeat ({
     robot_state <- attempt_move(robot_state)
-    if ("oxygen" %in% maze$tile) break
+    if ("oxygen" %in% robot_state$maze$tile) break
 })
 
-solution_1 <- sum(maze$tile %in% c("empty", "start"))
+solution_1 <- sum(robot_state$maze$tile %in% c("empty", "start"))
 cat("Solution to Part 1:", solution_1, "\n")
 
 ## -- PART 2 --
@@ -153,37 +156,40 @@ cat("Solution to Part 1:", solution_1, "\n")
 ## Remove all the deadends so we travel everywhere again
 ## Then recurse from the oxygen into all possible directions
 ## The longest route found is the solution
-oxygen_pos <- as.numeric(maze[maze$tile == "oxygen", 1:2])
-robot_state <- list(intcode_state = list(mmry = program),
+oxygen_pos <-
+    as.numeric(robot_state$maze[robot_state$maze$tile == "oxygen", 1:2])
+
+robot_state <- list(maz = initial_maze,
+                    intcode_state = list(mmry = program),
                     pos = c(0,0))
-maze <- initial_maze
-update_map(robot_state$pos, "start")
+robot_state$maze <- update_maze(robot_state$maze, robot_state$pos, "start")
 
 repeat ({
     robot_state <- attempt_move(robot_state)
     if (robot_state$finished) break
 })
 
-maze[maze$tile == "deadend",]$tile <- "empty"
+robot_state$maze[robot_state$maze$tile == "deadend",]$tile <- "empty"
 
 ## Function to get the max path length in every branching direction
-max_path_length_from <- function(pos) {
+max_path_length_from <- function(maze, pos) {
 
-    update_map(pos, "deadend")
-    cand_dirs <- get_candidates(pos)
+    maze <- update_maze(maze, pos, "deadend")
+    cand_dirs <- get_candidates(maze, pos)
 
     if (length(cand_dirs) == 0) {
         0
     } else {
         cand_pos <- lapply(directions[names(cand_dirs)], function(x) pos + x)
-        max(sapply(cand_pos, function(pos) 1 + max_path_length_from(pos)))
+        max(sapply(cand_pos, function(pos) 1 + max_path_length_from(maze, pos)))
     }
 
 }
 
-solution_2 <- max_path_length_from(oxygen_pos)
+solution_2 <- max_path_length_from(robot_state$maze, oxygen_pos)
 cat("Solution to Part 2:", solution_2, "\n")
 
-update_map(c(0,0), "start")
-update_map(oxygen_pos, "oxygen")
-draw_maze()
+maze <- robot_state$maze
+maze <- update_maze(maze, c(0,0), "start")
+maze <- update_maze(maze, oxygen_pos, "oxygen")
+draw_maze(maze)
