@@ -15,9 +15,8 @@ lut <-
             lapply(strsplit(reaction, " => ")[[1]], function(xhs) {
                 lapply(strsplit(xhs, ", "), function(chemqs) {
                     do.call(rbind, lapply(strsplit(chemqs, " "), function(chemq) {
-                        data.frame(chemical = chemq[2], quantity = as.numeric(chemq[1])
-                                   )
-                                   }))
+                        data.frame(chemical = chemq[2], quantity = as.numeric(chemq[1]))
+                    }))
                 })[[1]]
             })
 
