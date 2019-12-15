@@ -48,32 +48,24 @@ update_map <- function(pos, tile) {
                                   tile = tile))
     }
 
-    all_coords <- expand.grid(x = seq(min(maze$x), max(maze$x)),
-                              y = seq(min(maze$y), max(maze$y)))
-    maze <<- merge(maze, all_coords, all.y = TRUE)
-    rownames(maze) <<- NULL
-
-    if (any(is.na(maze$tile))) {
-        maze[is.na(maze$tile),]$tile <<- "unknown"
-    }
-
-    maze <<- maze[order(maze$x, maze$y),]
-
     invisible()
 
 }
 
 ## Function to render the map in stdout
-draw_map <- function(robot_pos = NULL) {
+draw_maze <- function(robp = NULL) {
 
-    maze <- maze
+    all_coords <- expand.grid(x = seq(min(maze$x), max(maze$x)),
+                              y = seq(min(maze$y), max(maze$y)))
 
-    if (!is.null(robot_pos)) {
-        maze[maze$x == robot_pos[1] & maze$y == robot_pos[2],]$tile <- "robot"
-    }
+    mz <- merge(maze, all_coords, all.y = TRUE)
+    mz <- mz[order(mz$x, mz$y),]
 
-    mzmat <- matrix(maze$tile, ncol = length(unique(maze$y)), byrow = TRUE)
-    apply(mzmat, 1, function(x) cat(tile_symbols[x], "\n"))
+    if (any(is.na(mz$tile))) mz[is.na(mz$tile),]$tile <- "unknown"
+    if (!is.null(robp)) mz[mz$x == robp[1] & mz$y == robp[2],]$tile <- "robot"
+
+    mzm <- matrix(mz$tile, ncol = length(unique(mz$y)), byrow = TRUE)
+    apply(mzm, 1, function(x) cat(tile_symbols[x], "\n"))
     cat("\n\n")
 
     invisible()
@@ -194,4 +186,4 @@ cat("Solution to Part 2:", solution_2, "\n")
 
 update_map(c(0,0), "start")
 update_map(oxygen_pos, "oxygen")
-draw_map()
+draw_maze()
