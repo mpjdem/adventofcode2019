@@ -31,8 +31,13 @@ solution_1 <- sum(rowSums(abs(dat$pos)) * rowSums(abs(dat$vel)))
 cat("Solution to Part 1:", solution_1, "\n")
 
 ## -- PART 2 --
-## Here I'll have to cheat on base R... not going to implement prime factors!
-library(schoolmath)
+## Find the period of x,y,z independently, then compute LCM
+## Initially I cheated on base and used {schoolmath} for Least Common Multiple
+## But Tim Taylor had a simple implementation here:
+## https://tjtnew.github.io/blog/posts/2019-12-12-advent-of-code-2019-day-12-r/
+## So I've borrowed that approach now
+gcd <- function(x, y) {while (y != 0) {r <- x %% y; x <- y; y <- r}; x}
+lcm <- function(x,y) x * y / gcd(x, y)
 
 dat <- init_dat
 res <- rep(0, 3)
@@ -46,5 +51,5 @@ repeat ({
   if (all(res > 0)) break
 })
 
-solution_2 <- scm(scm(res[1], res[2]), res[3])
+solution_2 <- Reduce(lcm, res)
 cat("Solution to Part 2:", format(solution_2, scientific = FALSE), "\n")
