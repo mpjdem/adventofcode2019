@@ -44,7 +44,7 @@ first_x_hit <- function(y, rng_x) {
 y <- low_bound_y
 x <- first_x_hit(y, seq(low_bound_x - sqsz, low_bound_x + sqsz))
 for (y in low_bound_y:(low_bound_y * bota * 2)) {
-    x <- first_x_hit(y, seq(x - 5, x + 5))
+    x <- first_x_hit(y, seq(x, x + 5))
     if (in_beam(c(x + (sqsz - 1), y - (sqsz - 1)))) break
 }
 
