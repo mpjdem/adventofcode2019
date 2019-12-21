@@ -12,7 +12,7 @@ source("intcode/run_intcode_step.R")
 program <- as.numeric(strsplit(readLines("input/input21.txt"), ",")[[1]])
 
 ## Function to run a springscript program
-intcode_prompt <- function(intcode_state, input) {
+run_springscript <- function(intcode_state, input) {
 
     repeat ({
         intcode_state <- run_intcode_step(intcode_state)
@@ -38,12 +38,12 @@ intcode_state <- list(mmry = program)
 ss_program_1 <- c(utf8ToInt(paste(readLines("aoc19_day21_1.sps"),
                                   collapse = "\n")), 10)
 
-solution_1 <- intcode_prompt(intcode_state, ss_program_1)
+solution_1 <- run_springscript(intcode_state, ss_program_1)
 cat("Solution to Part 1:", solution_1, "\n \n")
 
 ## -- PART 2 --
 ss_program_2 <- c(utf8ToInt(paste(readLines("aoc19_day21_2.sps"),
                                   collapse = "\n")), 10)
 
-solution_2 <- intcode_prompt(intcode_state, ss_program_2)
+solution_2 <- run_springscript(intcode_state, ss_program_2)
 cat("Solution to Part 2:", solution_2, "\n \n")
