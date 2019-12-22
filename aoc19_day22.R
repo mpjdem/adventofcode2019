@@ -31,15 +31,16 @@ shuffle_cards <- function(n_cards, steps) {
     for (step in steps) {
 
         idx <- regexpr("[0-9\\-]+", step)
-        n <- if (idx != -1) as.numeric(substr(step, idx, nchar(step))) else NULL
+        n <- if (idx != -1) as.numeric(substr(step, idx, nchar(step)))
 
-        cards <- if (grepl("into new", step)) {
-                     into_new(cards)
-                 } else if (grepl("cut", step)) {
-                     cut_n(cards, n)
-                 } else if (grepl("increment", step)) {
-                     increment_n(cards, n)
-                 }
+        cards <-
+            if (grepl("into new", step)) {
+                into_new(cards)
+            } else if (grepl("cut", step)) {
+                cut_n(cards, n)
+            } else if (grepl("increment", step)) {
+                increment_n(cards, n)
+            }
 
     }
 
@@ -67,7 +68,7 @@ a <- 1
 b <- 0
 for (step in rev(inp)) {
     idx <- regexpr("[0-9\\-]+", step)
-    n <- if (idx != -1) as.numeric(substr(step, idx, nchar(step))) else NULL
+    n <- if (idx != -1) as.numeric(substr(step, idx, nchar(step)))
     if (grepl("into new", step)) {
         b <- b + 1
         a <- a * -1
@@ -85,10 +86,9 @@ for (step in rev(inp)) {
 
 ## Fancy mathy simplification can tell us what would happen after n_reps of shuffles
 solution_2 <-
-    (
-        (gmp::powm(a, n_reps, n_cards) * 2020) +
-        (b * (gmp::powm(a, n_reps, n_cards) + n_cards - 1) *
-         (gmp::powm(a - 1, n_cards - 2, n_cards)))
+    ((gmp::powm(a, n_reps, n_cards) * 2020) +
+     (b * (gmp::powm(a, n_reps, n_cards) + n_cards - 1) *
+          (gmp::powm(a - 1, n_cards - 2, n_cards)))
     ) %% n_cards
 
 cat("Solution to Part 2:", format(solution_2, scientific = FALSE), "\n")
