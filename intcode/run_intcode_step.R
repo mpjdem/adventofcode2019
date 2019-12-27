@@ -82,12 +82,18 @@ run_intcode_step <- function(state, inputs = numeric(0)) {
                 next_instruction_ptr
             } else if (opcode == "3") {
                 ## input
-                set_val(1, inputs[inp_ptr + 1])
-                inp_ptr <- inp_ptr + 1
-                next_instruction_ptr
+                if (inp_ptr == length(inputs)) {
+                    opcode <- "100" # pause
+                    mmry_ptr
+                } else {
+                    set_val(1, inputs[inp_ptr + 1])
+                    inp_ptr <- inp_ptr + 1
+                    next_instruction_ptr
+                }
             } else if (opcode == "4") {
                 ## output
                 output <- get_val(1)
+                opcode <- "100" # pause
                 next_instruction_ptr
             } else if (opcode == "5") {
                 ## jump_if_true
@@ -112,8 +118,8 @@ run_intcode_step <- function(state, inputs = numeric(0)) {
                 mmry_ptr
             }
 
-        ## Stop on 4 (pause) or 99 (halt)
-        if (opcode %in% c("99", "4")) {
+        ## Stop on 100 (pause) or 99 (halt)
+        if (opcode %in% c("99", "100")) {
             break
         }
 
