@@ -9,7 +9,6 @@
 mmry <- as.numeric(strsplit(readLines("input/input5.txt"), ",")[[1]])
 
 ## Solution for both parts of the assignment, modifying my Day 2 solution
-## The final memory returned does not matter, only the printed output
 run_intcode <- function(inp, mmry) {
 
     ptr <- 1
@@ -51,7 +50,7 @@ run_intcode <- function(inp, mmry) {
                 mmry[params[1] + 1] <- inp
                 next_instruction_ptr
             } else if(opcode == "4") {
-                cat(get_val(1), " ")
+                output <<- c(output, get_val(1))
                 next_instruction_ptr
             } else if (opcode == "5") {
                 if (get_val(1) != 0) get_val(2) + 1 else next_instruction_ptr
@@ -67,7 +66,6 @@ run_intcode <- function(inp, mmry) {
 
         ## Stop if we encounter opcode 99 or when we reach the end
         if (opcode == "99" || ptr > length(mmry)) {
-            cat("\n\n")
             break
         }
 
@@ -75,8 +73,20 @@ run_intcode <- function(inp, mmry) {
 
 }
 
-cat("-- Part 1 --\n")
+## -- PART 1 --
+output <- numeric(0)
 final_mmry <- run_intcode(1, mmry)
+solution_1 <- tail(output, 1)
 
-cat("-- Part 2 --\n")
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output5_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
+
+## -- PART 2 --
+output <- numeric(0)
 final_mmry <- run_intcode(5, mmry)
+solution_2 <- tail(output, 1)
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output5_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

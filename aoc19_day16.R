@@ -26,8 +26,12 @@ run_phases <- function(sq, rppat, n_phases, n_skip_out, n_dig_out) {
     sq[(1 + n_skip_out):(n_skip_out + n_dig_out)]
 }
 
-solution_1 <- run_phases(inp, c(0, 1, 0, -1), 100, 0, 8)
-cat("Solution to Part 1:", paste(solution_1, collapse = ""), "\n")
+solution_1 <- paste(run_phases(inp, c(0, 1, 0, -1), 100, 0, 8),
+                    collapse = "")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output16_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## The naive approach of Part 1 will take far too long
@@ -49,5 +53,9 @@ run_phases_alt <- function(sq, n_phases, n_skip_out, n_dig_out) {
 
 n_skip <- sum(inp[1:7] * 10**(seq(6, 0)))
 
-solution_2 <- run_phases_alt(rep(inp, 10000), 100, n_skip, 8)
-cat("Solution to Part 2:", paste(solution_2, collapse = ""), "\n")
+solution_2 <- paste(run_phases_alt(rep(inp, 10000), 100, n_skip, 8),
+                    collapse = "")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output16_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

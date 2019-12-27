@@ -5,8 +5,8 @@
 ## GitHub: https://github.com/mpjdem
 ## Website: https://www.mpjdem.xyz
 
-## Define the input
-inp <- c(138241, 674034)
+## Read the input
+inp <- as.numeric(readLines("input/input4.txt"))
 
 ## -- PART 1 --
 ## Take all possibilities and convert into a vector of single-digit integers
@@ -22,7 +22,9 @@ solution_1 <-
     length(Filter(function(x) all(x >= 0L) && (0L %in% x),
                   candidate_diffs))
 
-cat("Solution to Part 1:", solution_1, "\n")
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output4_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## Allow at most one consecutive 0 in the diffs
@@ -34,6 +36,8 @@ solution_2 <-
         all(x >= 0L) && any((x == 0L) & (diff_fw != 0L) & diff_bw != 0L)
     }, candidate_diffs))
 
-cat("Solution to Part 2:", solution_2, "\n")
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output4_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")
 
 ## This wasn't the most efficient thing to do really... but it works!

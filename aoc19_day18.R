@@ -78,7 +78,8 @@ trace_steps <- function(maze, start_tile, target_tile) {
 
         cand_dirs <- get_candidates(maze, pos)
 
-        if (current_status == 0 & (length(cand_dirs) != 1 || current_tile == start_tile)) {
+        if (current_status == 0 &
+            (length(cand_dirs) != 1 || current_tile == start_tile)) {
             ## undiscovered, not a deadend OR start -> visited once
             maze[current_idx,]$status <- 1
         } else if (length(cand_dirs) == 1 & current_tile != start_tile) {
@@ -100,6 +101,7 @@ trace_steps <- function(maze, start_tile, target_tile) {
     })
 
     list(n_steps = sum(maze$status == 1),
+         ## keys and doors discovered along the way
          keys = maze[(maze$tile %in% letters) & maze$status == 1,]$tile,
          doors = maze[(maze$tile %in% LETTERS) & maze$status == 1,]$tile)
 
@@ -125,15 +127,15 @@ trace_quarter <- function(qd, initial) {
     combs <- combs[combs$from != combs$to,]
     combs <- combs[combs$from %in% maze$tile & combs$to %in% maze$tile,]
 
-    res <- data.frame(from = character(0), to = character(0), n_steps = numeric(0), doors = character(0))
+    res <- data.frame(from = character(0), to = character(0),
+                      n_steps = numeric(0), doors = character(0))
+
     for (idx in seq(nrow(combs))) {
         out <- trace_steps(maze, combs[idx,]$from, combs[idx,]$to)
         res <- rbind(res, data.frame(from = combs[idx,]$from,
                                      to = combs[idx,]$to,
                                      n_steps = out$n_steps,
-                                     ## keys discovered along the way
                                      keys = paste(out$keys, collapse = ""),
-                                     ## doors encountered along the way
                                      doors = paste(out$doors, collapse = "")))
     }
 
@@ -197,14 +199,14 @@ distance_to_keys <- function(this_key, remaining_keys) {
 
         valid_keys <- tr[tr$from == this_key &
                          tr$to %in% remaining_keys &
-                         sapply(strsplit(tr[,]$doors, split = ""),
+                         sapply(strsplit(tr$doors, split = ""),
                                 function(x) !any(tolower(x) %in% remaining_keys)),]$to
 
         shortest_distance <- Inf
 
         for (next_key in valid_keys) {
             dst <- tr[tr$from == this_key & tr$to == next_key,]$n_steps +
-                distance_to_keys(next_key, setdiff(remaining_keys, next_key))
+                   distance_to_keys(next_key, setdiff(remaining_keys, next_key))
             shortest_distance <- min(shortest_distance, dst)
         }
 
@@ -218,7 +220,10 @@ distance_to_keys <- function(this_key, remaining_keys) {
 }
 
 solution_1 <- distance_to_keys("@", letters)
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output18_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## This is greatly simplified by my initial approach of the maze as four
@@ -243,4 +248,7 @@ tr <- quarters_traced$mq4
 mq4_steps <- distance_to_keys("@", mq4_keys)
 
 solution_2 <- mq1_steps + mq2_steps + mq3_steps + mq4_steps
-cat("Solution to Part 2:", solution_2, "\n")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output18_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

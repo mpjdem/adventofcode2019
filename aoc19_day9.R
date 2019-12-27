@@ -151,8 +151,16 @@ run_intcode_program <- function(inputs, program) {
 
 }
 
+## -- PART 1 --
 solution_1 <- run_intcode_program(1, program)
-cat("Solution to Part 1:", solution_1, "\n")
 
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output9_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
+
+## -- PART 2 --
 solution_2 <- run_intcode_program(2, program)
-cat("Solution to Part 2:", solution_2, "\n")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output9_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

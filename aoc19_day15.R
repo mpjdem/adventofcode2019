@@ -8,7 +8,7 @@
 options(stringsAsFactors = FALSE)
 
 ## Load the incode computer
-source("run_intcode_step.R")
+source("intcode/run_intcode_step.R")
 
 ## Get the program
 program <- as.numeric(strsplit(readLines("input/input15.txt"), ",")[[1]])
@@ -138,7 +138,7 @@ attempt_move <- function(robot_state) {
 
 ## -- PART 1 --
 ## Travel the maze, marking deadends, until the oxygen is reached
-robot_state <- list(mze = initial_maze,
+robot_state <- list(maze = initial_maze,
                     intcode_state = list(mmry = program),
                     pos = c(0,0))
 robot_state$maze <- update_maze(robot_state$maze, robot_state$pos, "start")
@@ -149,7 +149,10 @@ repeat ({
 })
 
 solution_1 <- sum(robot_state$maze$tile %in% c("empty", "start"))
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output15_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## Explore the full map instead of stopping at oxygen
@@ -159,7 +162,7 @@ cat("Solution to Part 1:", solution_1, "\n")
 oxygen_pos <-
     as.numeric(robot_state$maze[robot_state$maze$tile == "oxygen", 1:2])
 
-robot_state <- list(maz = initial_maze,
+robot_state <- list(maze = initial_maze,
                     intcode_state = list(mmry = program),
                     pos = c(0,0))
 robot_state$maze <- update_maze(robot_state$maze, robot_state$pos, "start")
@@ -187,9 +190,12 @@ max_path_length_from <- function(maze, pos) {
 }
 
 solution_2 <- max_path_length_from(robot_state$maze, oxygen_pos)
-cat("Solution to Part 2:", solution_2, "\n")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output15_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")
 
 maze <- robot_state$maze
 maze <- update_maze(maze, c(0,0), "start")
 maze <- update_maze(maze, oxygen_pos, "oxygen")
-draw_maze(maze)
+# draw_maze(maze)

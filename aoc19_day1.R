@@ -16,7 +16,10 @@ mass_to_fuel <- function(x) floor(x / 3) - 2
 initial_fuel <- sapply(inp, mass_to_fuel)
 
 solution_1 <- sum(initial_fuel)
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output1_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## This assignment screams 'RECURSIOOOOOOOON!!!'. So we recurse.
@@ -33,4 +36,7 @@ add_fuel_for_fuel <- function(fuel) {
 }
 
 solution_2 <- sum(sapply(initial_fuel, add_fuel_for_fuel))
-cat("Solution to Part 2:", solution_2, "\n")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output1_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

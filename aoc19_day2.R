@@ -49,8 +49,12 @@ run_intcode <- function(mmry, ptr = 1) {
 
 inp_1202 <- inp
 inp_1202[2:3] <- c(12, 2)
+
 solution_1 <- run_intcode(inp_1202)[1]
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output2_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## For 10k possible inputs we can use brute force easily. I use common base R
@@ -65,4 +69,7 @@ df$outp <- mapply(try_inputs, df$noun, df$verb, MoreArgs = list(mmry = inp))
 idx <- which(df$outp == 19690720)
 
 solution_2 <- (100 * df$noun[idx]) + df$verb[idx]
-cat("Solution to Part 2:", solution_2, "\n")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output2_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

@@ -6,7 +6,7 @@
 ## Website: https://www.mpjdem.xyz
 
 ## Load the incode computer
-source("run_intcode_step.R")
+source("intcode/run_intcode_step.R")
 
 ## Get the program
 program <- as.numeric(strsplit(readLines("input/input13.txt"), ",")[[1]])
@@ -48,14 +48,20 @@ intcode_state <- list(mmry = program)
 res <- run_game_step(intcode_state, initial = TRUE)
 
 solution_1 <- sum(res$out[, 3] == 2)
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output13_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 program[1] <- 2
 intcode_state <- list(mmry = program)
+DRAW_SCR <- FALSE
 
 ## Function to draw the screen from the tile coordinates
 draw_screen <- function(screen_state, score = 0) {
+
+    if (!DRAW_SCR) return(invisible())
 
     if (sleep_time == -1) return()
     scr <- matrix(tile_symbols[screen_state[, 3] + 1],
@@ -65,6 +71,8 @@ draw_screen <- function(screen_state, score = 0) {
     if (length(score) == 0) score <- 0
     cat("\nScore:", score, "\n\n")
     Sys.sleep(sleep_time)
+
+    invisible()
 
 }
 
@@ -102,7 +110,7 @@ game_update <- function(game_state) {
 
     if (length(res$out) == 0) {
         draw_screen(screen_state, score)
-        cat("GAME OVER\n")
+        if (DRAW_SCR) cat("GAME OVER\n")
         keyb_inp <- "q"
     } else if (res$out[, 1] == -1) {
         score <- res$out[, 3]
@@ -143,4 +151,7 @@ repeat ({
 })
 
 solution_2 <- sum(game_state$score)
-cat("Solution to Part 2:", solution_2, "\n")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output13_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

@@ -23,7 +23,10 @@ out <- lapply(seq(nrow(coords)), function(rw) {
 out <- do.call(rbind, out)
 
 solution_1 <- sum(out$val)
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output19_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## Brute force; discretisation of the beam lines makes linear model inaccurate
@@ -34,7 +37,7 @@ topl <- aggregate(y ~ x, out[out$val == 1,], max)
 bota <- coef(lm(y ~ x, botl))[[2]]
 topa <- coef(lm(y ~ x, topl))[[2]]
 low_bound_y <- round(sqsz / (topa - bota))
-low_bound_x <-  round(low_bound_y / bota)
+low_bound_x <- round(low_bound_y / bota)
 
 first_x_hit <- function(y, rng_x) {
     for (x in rng_x) if (in_beam(c(x, y))) break
@@ -49,4 +52,7 @@ for (y in low_bound_y:(low_bound_y * bota * 2)) {
 }
 
 solution_2 <- 10000 * x + (y - (sqsz - 1))
-cat("Solution to Part 2:", solution_2, "\n")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output19_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

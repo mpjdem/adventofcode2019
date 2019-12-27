@@ -13,6 +13,9 @@ source("intcode/run_intcode_step.R")
 ## Get the program
 program <- as.numeric(strsplit(readLines("input/input17.txt"), ",")[[1]])
 
+## Set to TRUE to show the promps
+show_prompts <- FALSE
+
 ## -- PART 1 --
 intcode_state <- list(mmry = program)
 
@@ -75,11 +78,12 @@ ix_idx <- as.numeric(names(tbl)[tbl == 4])
 ix_found <- scaffolds[ix_idx,]
 
 solution_1 <- sum(ix_found$x * ix_found$y)
-cat("Solution to Part 1:", paste(solution_1, collapse = ""), "\n")
 
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output17_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
-
 ## Function to get the robot position on the scaffolding map
 get_robot <- function(scafmap) {
     robrow <- scafmap[!(scafmap$tile %in% c(".", "#")),]
@@ -179,15 +183,15 @@ get_function_scores <- function(mv_vec, existing_fn) {
 ## Function to read the text of a prompt from the robot, and provide input
 fill_prompt <- function(intcode_state, input) {
 
-    cat(intToUtf8(intcode_state$output))
+    if (show_prompts) cat(intToUtf8(intcode_state$output))
 
     repeat ({
         intcode_state <- run_intcode_step(intcode_state)
-        cat(intToUtf8(intcode_state$output))
+        if (show_prompts) cat(intToUtf8(intcode_state$output))
         if (intcode_state$output == 10) break
     })
 
-    cat(intToUtf8(input), " \n")
+    if (show_prompts) cat(intToUtf8(input), " \n")
     intcode_state <- run_intcode_step(intcode_state, input)
 
     intcode_state
@@ -217,8 +221,6 @@ repeat ({
 
 mv_str <- paste(mv_vec, collapse = ",")
 
-cat(" \nFull path:", mv_str, "\n \n")
-
 ## Next, determine the functions that best compress the path
 ## Until no functions can be found anymore
 extracted_fns <- character(0)
@@ -241,11 +243,8 @@ names(extracted_fns) <- LETTERS[seq(length(extracted_fns))]
 for (fni in seq_along(extracted_fns)) {
     nm <- names(extracted_fns[fni])
     fn <- extracted_fns[fni]
-    cat("Function", nm, ":", fn, "\n \n")
     mv_str <- gsub(fn, nm, mv_str)
 }
-
-cat("Compressed path:", mv_str, "\n")
 
 ## Finally, give the instructions to the robot
 ## It will first return the scaffolding map, then take the prompts
@@ -254,11 +253,7 @@ cat("Compressed path:", mv_str, "\n")
 intcode_state <- list(mmry = program)
 intcode_state$mmry[1] <- 2
 
-cat(" \n**START STATE**\n")
 scmap1 <- get_scafmap(intcode_state)
-
-draw_scafmap(scmap1$scafmap)
-cat(" \n**PROMPTS**\n")
 
 intcode_state <- fill_prompt(scmap1$intcode_state, c(utf8ToInt(mv_str), 10))
 for (fn in extracted_fns) {
@@ -267,8 +262,10 @@ for (fn in extracted_fns) {
 intcode_state <- fill_prompt(intcode_state, c(utf8ToInt("n"), 10))
 scmap2 <- get_scafmap(intcode_state)
 
-cat(" \n**END STATE**\n")
-draw_scafmap(scmap2$scafmap)
+## draw_scafmap(scmap2$scafmap)
 
 solution_2 <- run_intcode_step(scmap2$intcode_state)$output
-cat("Solution to Part 2:", paste(solution_2, collapse = ""), "\n")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output17_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

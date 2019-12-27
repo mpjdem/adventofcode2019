@@ -29,7 +29,9 @@ unique_angles <- aggregate(angle ~ id_from, data = df,
                            function(x) length(unique(x)))
 
 solution_1 <- max(unique_angles$angle)
-cat("Solution to Part 1:", solution_1, "\n")
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output10_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## Filter the data frame to contain only the relevant 'from' asteroid
@@ -50,4 +52,6 @@ df_station <- df_station[order(dist_order, angle_groups),]
 
 ## Take the 200th row and calculate the number for the solution
 solution_2 <- df_station[200,]$row_to + df_station[200,]$col_to * 100
-cat("Solution to Part 2:", solution_2, "\n")
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output10_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

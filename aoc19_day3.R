@@ -49,7 +49,10 @@ intersections <- merge(get_coordinates(wire_paths[[1]]),
                        by = c("x", "y"), all = FALSE)
 
 solution_1 <- min(abs(intersections$x) + abs(intersections$y))
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output3_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## Since we already generate the full paths, computing the number of steps
@@ -62,4 +65,7 @@ intersections <- merge(cbind(coords1, idx1 = seq(nrow(coords1))),
                        by = c("x", "y"), all = FALSE)
 
 solution_2 <- min(intersections$idx1 + intersections$idx2)
-cat("Solution to Part 2:", solution_2, "\n")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output3_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

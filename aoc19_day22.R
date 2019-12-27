@@ -50,7 +50,10 @@ shuffle_cards <- function(n_cards, steps) {
 
 cards <- shuffle_cards(10007, inp)
 solution_1 <- which(cards == 2019) - 1
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output22_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## The mathematical solution is taken from reddit - this is an R implementation.
@@ -91,4 +94,6 @@ solution_2 <-
           (gmp::powm(a - 1, n_cards - 2, n_cards)))
     ) %% n_cards
 
-cat("Solution to Part 2:", format(solution_2, scientific = FALSE), "\n")
+cat("Solution to Part 2:", format(solution_2, scientific = FALSE), "- ")
+check_2 <- as.numeric(readLines("output/output22_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

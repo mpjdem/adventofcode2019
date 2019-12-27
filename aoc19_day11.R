@@ -6,7 +6,7 @@
 ## Website: https://www.mpjdem.xyz
 
 ## Since the intcode computer is finished now I'll keep it separate
-source("run_intcode_step.R")
+source("intcode/run_intcode_step.R")
 
 ## Get the program
 program <- as.numeric(strsplit(readLines("input/input11.txt"), ",")[[1]])
@@ -77,7 +77,10 @@ paint_robot_run(initial_robot_state)
 
 ## Every panel present in the final list has been painted at least once
 solution_1 <- length(painted_panels)
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output11_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## Set the (0,0) start panel to white and run the program again
@@ -90,5 +93,27 @@ white_panels <- painted_panels[painted_panels == 1]
 white_panels_m <-
     matrix(as.numeric(unlist(strsplit(names(white_panels), ","))),
            ncol = 2, byrow = TRUE)
+white_panels_m[, 2] <- -white_panels_m[, 2]
 
-plot(white_panels_m[,1], white_panels_m[,2], pch = 15, cex = 3.5, asp = 1)
+nc <- max(white_panels_m[, 1]) - min(white_panels_m[, 1]) + 1
+nr <- max(white_panels_m[, 2]) - min(white_panels_m[, 2]) + 1
+
+img <- matrix(rep(".", nr * nc), ncol = nc)
+
+foo <- apply(white_panels_m, 1,
+             function(rw) {
+                 img[rw[2] - min(white_panels_m[, 2]) + 1,
+                     rw[1] - min(white_panels_m[, 1]) + 1 ] <<- "@"
+             })
+
+solution_2 <- apply(img, 1, paste, collapse = "")
+
+cat("Solution to Part 2:\n")
+foo <- sapply(solution_2, function(x) cat(x, "\n"))
+check_2 <- readLines("output/output11_2.txt")
+
+if (identical(solution_2, check_2)) {
+    cat("correct!\n")
+} else {
+    cat("wrong!\n")
+}

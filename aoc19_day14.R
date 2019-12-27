@@ -54,7 +54,10 @@ ore_needed_for <- function(chout, qout_req) {
 }
 
 solution_1 <- ore_needed_for("FUEL", 1)
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output14_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## Simulate what amount of ore would be needed for a given amount of fuel
@@ -76,4 +79,7 @@ repeat ({
 })
 
 solution_2 <- fuel
-cat("Solution to Part 2:", solution_2, "\n")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output14_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

@@ -28,7 +28,10 @@ dat <- init_dat
 for (i in seq(1000)) dat <- step_update(dat)
 
 solution_1 <- sum(rowSums(abs(dat$pos)) * rowSums(abs(dat$vel)))
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output12_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## Find the period of x,y,z independently, then compute LCM
@@ -52,4 +55,7 @@ repeat ({
 })
 
 solution_2 <- Reduce(lcm, res)
-cat("Solution to Part 2:", format(solution_2, scientific = FALSE), "\n")
+
+cat("Solution to Part 2:", format(solution_2, scientific = FALSE), "- ")
+check_2 <- as.numeric(readLines("output/output12_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

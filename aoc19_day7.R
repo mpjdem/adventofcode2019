@@ -149,7 +149,9 @@ solution_1 <-
                function(x) run_amp_seq(5, 0, x,
                                        rep(list(initial_amp_state), 5))$output))
 
-cat("Solution to Part 1:", solution_1, "\n")
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output7_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## Function to run the amp sequence with a feedback loop
@@ -183,4 +185,6 @@ solution_2 <-
                function(x) run_amp_fb(0, x,
                                       rep(list(initial_amp_state), 5))))
 
-cat("Solution to Part 2:", solution_2, "\n")
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output7_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

@@ -101,7 +101,10 @@ start_pos <- as.numeric(maze[maze$tile == "AA", c("x", "y")])
 target_pos <- as.numeric(maze[maze$tile == "ZZ", c("x", "y")])
 
 solution_1 <- dist_to_target(maze, start_pos, complex(0), target_pos)
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output20_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 maze$is_outer_portal <-
@@ -167,4 +170,7 @@ start_pos_enc <- maze[maze$tile == "AA",]$enc
 target_pos_enc <- maze[maze$tile == "ZZ",]$enc
 
 solution_2 <- dist_to_target_recursive(start_pos_enc, 1, target_pos_enc, 26)
-cat("Solution to Part 2:", solution_2, "\n")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output20_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

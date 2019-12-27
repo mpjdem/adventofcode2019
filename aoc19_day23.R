@@ -89,7 +89,10 @@ repeat ({
 })
 
 solution_1 <- computers[[nat_addr]]$input_queue[2]
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output23_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 computers <- start_network(initial_state, comp_addr, nat_addr)
@@ -115,4 +118,7 @@ repeat ({
 })
 
 solution_2 <- tail(nat_log$y, 1)
-cat("Solution to Part 2:", solution_2, "\n")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output23_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

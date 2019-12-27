@@ -66,7 +66,10 @@ repeat ({
 })
 
 solution_1 <- eris_int
-cat("Solution to Part 1:", solution_1, "\n")
+
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output24_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## Helper function for subset assignment in a data frame
 ## Mostly to avoid separate logic each time when the mask is empty
@@ -159,4 +162,7 @@ eris <- eris0
 for (i in seq(200)) eris <- one_minute_recursive(eris, sz)
 
 solution_2 <- nrow(eris)
-cat("Solution to Part 2:", solution_2, "\n")
+
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output24_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")

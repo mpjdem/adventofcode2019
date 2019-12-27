@@ -31,9 +31,11 @@ count_orbits <- function(orbiter) {
 
 }
 
-solution_1 <- sum(sapply(unique(inp$orbiter), count_orbits))
+solution_1 <- sum(sapply(unique(inp$orbiter), count_orbits))#
 
-cat("Solution to Part 1:", solution_1, "\n")
+cat("Solution to Part 1:", solution_1, "- ")
+check_1 <- as.numeric(readLines("output/output6_1.txt"))
+if (check_1 == solution_1) cat("correct!\n") else cat("wrong!\n")
 
 ## -- PART 2 --
 ## Construct the path from both YOU and SAN to the center
@@ -64,4 +66,6 @@ shared_path <-
 
 solution_2 <- min(shared_path$n_hops_you + shared_path$n_hops_santa)
 
-cat("Solution to Part 2:", solution_2, "\n")
+cat("Solution to Part 2:", solution_2, "- ")
+check_2 <- as.numeric(readLines("output/output6_2.txt"))
+if (check_2 == solution_2) cat("correct!\n") else cat("wrong!\n")
