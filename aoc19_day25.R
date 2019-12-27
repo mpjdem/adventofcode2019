@@ -5,11 +5,7 @@
 ## GitHub: https://github.com/mpjdem
 ## Website: https://www.mpjdem.xyz
 
-## Changed the intcode computer for the first time in many days.
-## It now pauses when it expects input but it hasn't received any.
 source("intcode/run_intcode_step.R")
-
-## Get the program
 program <- as.numeric(strsplit(readLines("input/input25.txt"), ",")[[1]])
 
 ## -- PART 1 --
