@@ -30,9 +30,8 @@ repeat ({
 
     if (is.null(intcode_state$output)) {
 
-        if (interactive) cat(intToUtf8(output))
-
         input_chr <- if (interactive) {
+            cat(intToUtf8(output))
             readline()
         } else {
             solution_idx <- regexpr("[0-9]{10}", intToUtf8(output))
@@ -56,7 +55,7 @@ repeat ({
 
 })
 
-if (interactive) solution_chr <- readline("Solution? ")
+if (interactive) solution_chr <- readline("Solution number? ")
 solution_1 <- as.numeric(solution_chr)
 
 cat("Solution to Part 1:", solution_1, "- ")
